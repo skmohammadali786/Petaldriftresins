@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { products } from '@/lib/petal-data';
 import { AdminAudit, CmsContent, defaultCmsContent, getActiveBanners, OrderRecord, TrackingEvent, TrackingStatus } from '@/lib/site-content';
 
@@ -108,13 +108,13 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const canManageContent = CONTENT_ADMINS.includes(accountEmail);
   const canManageFulfillment = FULFILLMENT_ADMINS.includes(accountEmail);
 
-  const addAudit = (action: string, target: string) => {
+  const addAudit = useCallback((action: string, target: string) => {
     const actor = account?.email ?? 'system@petaldrift.com';
     setAudits((current) => [
       { id: uid('audit'), actor, action, target, timestamp: new Date().toISOString() },
       ...current
     ].slice(0, 100));
-  };
+  }, [account?.email]);
 
   useEffect(() => {
     saveToStorage(CART_KEY, cart);
@@ -302,7 +302,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       setCms((current) => ({ ...current, hero: { ...current.hero, ...input } }));
       addAudit('cms.hero.updated', 'homepage-hero');
     }
-  }), [account, audits, canManageContent, canManageFulfillment, cart, cms, isAdmin, orders, wishlist]);
+  }), [account, addAudit, audits, canManageContent, canManageFulfillment, cart, cms, isAdmin, orders, wishlist]);
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }

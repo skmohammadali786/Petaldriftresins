@@ -20,7 +20,7 @@ a { color: inherit; text-decoration: none; }
 .ripple { position: relative; overflow: hidden; }
 .ripple:after { content: ''; position: absolute; inset: auto; width: 12px; height: 12px; border-radius: 999px; background: rgba(255,255,255,.55); opacity: 0; transform: scale(1); }
 .ripple:active:after { inset: 50%; opacity: 1; transform: scale(18); transition: transform .55s, opacity .75s; }
-.ambient:before { content: ''; position: fixed; inset: 0; pointer-events: none; background: radial-gradient(circle at var(--cursor-x) var(--cursor-y), rgba(216,179,106,.14), transparent 22rem); z-index: 20; mix-blend-mode: multiply; }
+.ambient:before { content: ''; position: fixed; inset: 0; pointer-events: none; background: radial-gradient(circle at var(--cursor-x) var(--cursor-y), rgba(216,179,106,.10), transparent 18rem); z-index: 20; opacity: .75; will-change: background; }
 
 @keyframes floatPetal { 0% { transform: translate3d(0,-10vh,0) rotate(0deg); opacity: 0; } 10% { opacity: .8; } 100% { transform: translate3d(8vw,110vh,0) rotate(360deg); opacity: 0; } }
 @keyframes pollen { 0%,100% { transform: translateY(0); opacity: .35; } 50% { transform: translateY(-28px); opacity: .8; } }
@@ -28,6 +28,17 @@ a { color: inherit; text-decoration: none; }
 .petal { animation: floatPetal linear infinite; }
 .pollen { animation: pollen 5s ease-in-out infinite; }
 .bloom { animation: bloom .85s cubic-bezier(.2,.8,.2,1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+  .ambient:before { display: none; }
+}
 
 input, textarea, select { outline: none; }
 input:focus, textarea:focus, select:focus { box-shadow: 0 0 0 4px rgba(168,195,160,.22); border-color: #A8C3A0; }
