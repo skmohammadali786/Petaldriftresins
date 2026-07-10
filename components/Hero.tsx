@@ -1,7 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { useStore } from './StoreProvider';
 import { HomeBannerCarousel } from './HomeBannerCarousel';
 
@@ -34,26 +34,14 @@ export function Hero() {
           className="lux-panel relative overflow-hidden rounded-[2.5rem] p-5 md:p-6"
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, delay: 0.1 }}
+          transition={{ duration: 0.45, delay: 0.05 }}
         >
-          <div className="absolute -right-14 -top-14 h-44 w-44 rounded-full bg-gold/25 blur-2xl" />
-          <div className="relative rounded-[2rem] bg-white/78 p-6 shadow-inner md:p-8">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="font-button text-xs uppercase tracking-[.35em] text-gold">Signature edit</p>
-                <h2 className="mt-3 font-heading text-5xl leading-none md:text-6xl">Made to feel collected, not crowded.</h2>
-              </div>
-              <Sparkles className="shrink-0 text-gold" size={34} />
-            </div>
-            <p className="mt-5 max-w-lg text-sm leading-7 text-charcoal/65 md:text-base">Explore polished resin pieces grouped by occasion, finish, and memory type so the first fold stays clean and quick to browse.</p>
-            <div className="mt-7 grid gap-3 sm:grid-cols-2">
-              {cms.collections.slice(0, 4).map((collection) => (
-                <Link key={collection.id} href={`/collections#${collection.id}`} className="group rounded-3xl border border-gold/20 bg-ivory/80 p-5 transition hover:-translate-y-1 hover:border-gold/45 hover:bg-white hover:shadow-boutique">
-                  <h3 className="font-heading text-3xl">{collection.name}</h3>
-                  <p className="mt-2 line-clamp-2 text-sm leading-6 text-charcoal/60">{collection.description}</p>
-                  <span className="mt-4 inline-flex items-center gap-2 font-button text-xs uppercase tracking-[.22em] text-gold">View edit <ArrowRight size={14} className="transition group-hover:translate-x-1" /></span>
-                </Link>
-              ))}
+          <div className="relative grid min-h-[520px] place-items-center rounded-[2rem] bg-white/78 p-8 text-center shadow-inner">
+            <Sparkles className="text-gold" size={44} />
+            <div>
+              <p className="font-button text-xs uppercase tracking-[.35em] text-gold">Handmade in India</p>
+              <h2 className="mt-3 font-heading text-5xl leading-none md:text-7xl">Preserved flowers, ocean textures, and keepsakes in clear resin.</h2>
+              <p className="mx-auto mt-5 max-w-lg text-sm leading-7 text-charcoal/65 md:text-base">Browse ready-to-ship gifts or request a custom design with names, dates, flowers, colours, and premium packing.</p>
             </div>
           </div>
         </motion.div>

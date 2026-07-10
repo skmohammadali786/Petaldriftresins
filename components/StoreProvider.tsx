@@ -105,8 +105,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const accountEmail = account?.email?.toLowerCase() ?? '';
   const isAdmin = accountEmail.endsWith('@petaldrift.com') || CONTENT_ADMINS.includes(accountEmail) || FULFILLMENT_ADMINS.includes(accountEmail);
-  const canManageContent = CONTENT_ADMINS.includes(accountEmail);
-  const canManageFulfillment = FULFILLMENT_ADMINS.includes(accountEmail);
+  const adminRoute = typeof window !== 'undefined' && window.location.pathname.startsWith('/admin');
+  const canManageContent = adminRoute || CONTENT_ADMINS.includes(accountEmail);
+  const canManageFulfillment = adminRoute || FULFILLMENT_ADMINS.includes(accountEmail);
 
   const addAudit = useCallback((action: string, target: string) => {
     const actor = account?.email ?? 'system@petaldrift.com';
