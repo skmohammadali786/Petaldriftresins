@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { SiteChrome } from '@/components/SiteChrome';
 import { useStore } from '@/components/StoreProvider';
-import { products } from '@/lib/petal-data';
+import { useProducts } from '@/lib/use-products';
 
 function priceToNumber(price: string) {
   return Number(price.replace(/[^0-9.]/g, '')) || 0;
@@ -11,6 +11,7 @@ function priceToNumber(price: string) {
 
 export default function CartPage() {
   const { cart, addToCart, decreaseFromCart, removeFromCart } = useStore();
+  const { products } = useProducts();
   const items = cart.map((item) => {
     const product = products.find((entry) => entry.slug === item.slug);
     return product ? { ...product, quantity: item.quantity } : null;

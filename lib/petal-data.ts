@@ -8,7 +8,17 @@ export const categories = ['Resin Coasters', 'Serving Trays', 'Bookmarks', 'Jewe
 export const collections = ['Wedding Collection', 'Ocean Collection', 'Botanical Collection', 'Luxury Collection', 'Minimal Collection', 'Festive Collection', 'Home Décor', 'Jewelry', 'Gift Collection', 'Corporate Collection'];
 export const filters = ['Price', 'Category', 'Color', 'Material', 'Occasion', 'Gift Type', 'Availability', 'Sort'];
 
-export const products = [
+export type Product = {
+  slug: string;
+  name: string;
+  price: string;
+  rating: number;
+  stock: string;
+  material: string;
+  badge: string;
+};
+
+export const products: Product[] = [
   { slug: 'rose-garden-coaster-set', name: 'Rose Garden Coaster Set', price: '$86', rating: 5, stock: 'In stock', material: 'Botanical resin', badge: 'Customizable' },
   { slug: 'ocean-lace-serving-tray', name: 'Ocean Lace Serving Tray', price: '$148', rating: 5, stock: 'Low stock', material: 'Ocean resin', badge: 'Best seller' },
   { slug: 'lavender-memory-bookmark', name: 'Lavender Memory Bookmark', price: '$34', rating: 5, stock: 'In stock', material: 'Pressed flowers', badge: 'Personalized' },

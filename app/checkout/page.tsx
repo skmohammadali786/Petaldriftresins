@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { FormEvent, useMemo, useState } from 'react';
 import { SiteChrome } from '@/components/SiteChrome';
 import { useStore } from '@/components/StoreProvider';
-import { products } from '@/lib/petal-data';
+import { useProducts } from '@/lib/use-products';
 
 function priceToNumber(price: string) {
   return Number(price.replace(/[^0-9.]/g, '')) || 0;
@@ -12,6 +12,7 @@ function priceToNumber(price: string) {
 
 export default function CheckoutPage() {
   const { cart, clearCart, account } = useStore();
+  const { products } = useProducts();
   const [name, setName] = useState(account?.name ?? '');
   const [email, setEmail] = useState(account?.email ?? '');
   const [address, setAddress] = useState('');
@@ -21,7 +22,7 @@ export default function CheckoutPage() {
     const product = products.find((entry) => entry.slug === item.slug);
     if (!product) return sum;
     return sum + priceToNumber(product.price) * item.quantity;
-  }, 0), [cart]);
+  }, 0), [cart, products]);
 
   const submitOrder = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
