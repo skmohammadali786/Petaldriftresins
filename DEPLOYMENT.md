@@ -1,9 +1,9 @@
-# Petal Drift deployment guide
+# Mahi's Art deployment guide
 
 This repository is prepared for two Vercel deployments from the same codebase:
 
-1. **Storefront**: public customer website at `petaldrift.com`.
-2. **Admin**: protected dashboard at `admin.petaldrift.com`, using the `/admin` route.
+1. **Storefront**: public customer website at `mahisart.com`.
+2. **Admin**: protected dashboard at `admin.mahisart.com`, using the `/admin` route.
 
 ## 1. Cloudflare D1 (live product data)
 
@@ -35,7 +35,7 @@ The admin panel now writes products to Cloudflare D1, and storefront pages read 
 
 1. In Cloudflare, create an R2 bucket named `petal-drift-media`.
 2. Create an R2 API token with Object Read and Object Write permissions for that bucket.
-3. Add a custom public domain such as `media.petaldrift.com` to the bucket.
+3. Add a custom public domain such as `media.mahisart.com` to the bucket.
 4. Add these Vercel environment variables:
    - `CLOUDFLARE_ACCOUNT_ID`
    - `CLOUDFLARE_R2_BUCKET`
@@ -48,7 +48,7 @@ The admin panel now writes products to Cloudflare D1, and storefront pages read 
 
 Cloudflare Access is the primary auth layer for `/admin` and all `/api/admin/*` routes.
 
-1. In Cloudflare Zero Trust, create an Access application for `admin.petaldrift.com`.
+1. In Cloudflare Zero Trust, create an Access application for `admin.mahisart.com`.
 2. Add allowed identities (your email and your team emails).
 3. Add Vercel environment variables:
    - `CLOUDFLARE_AUTH_ISSUER`
@@ -65,14 +65,14 @@ Cloudflare Access is the primary auth layer for `/admin` and all `/api/admin/*` 
 3. Build command: `npm run build`.
 4. Output directory: leave default (`.next`).
 5. Add required env vars from `.env.example`.
-6. Add production domain `petaldrift.com`.
+6. Add production domain `mahisart.com`.
 
 ## 5. Vercel admin deployment
 
 Option A (single project):
 
 1. Use the same Vercel project.
-2. Add `admin.petaldrift.com` domain.
+2. Add `admin.mahisart.com` domain.
 3. Route admin users to `/admin`.
 4. Protect domain with Cloudflare Access.
 
@@ -80,12 +80,12 @@ Option B (separate admin Vercel project):
 
 1. Import the same repository a second time.
 2. Keep build settings the same (`npm run build`, output `.next`).
-3. Add `admin.petaldrift.com` domain.
+3. Add `admin.mahisart.com` domain.
 4. Protect domain with Cloudflare Access.
 
 ## 6. Admin panel usage process
 
-1. Login to `admin.petaldrift.com` through Cloudflare Access.
+1. Login to `admin.mahisart.com` through Cloudflare Access.
 2. Open `/admin`.
 3. Add/edit/delete product entries in **Admin product** form.
 4. Click save — data is written to D1.

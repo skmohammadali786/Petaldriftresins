@@ -5,7 +5,7 @@ export type R2Asset = { key: string; url: string; contentType: string; size: num
 export type PetalUser = { id: string; email: string; role: 'admin' | 'customer'; name?: string };
 
 export const cloudflareConfig = {
-  r2Bucket: process.env.CLOUDFLARE_R2_BUCKET ?? 'petal-drift-media',
+  r2Bucket: process.env.CLOUDFLARE_R2_BUCKET ?? 'mahis-art-media',
   r2PublicUrl: process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? '',
   authIssuer: process.env.CLOUDFLARE_AUTH_ISSUER ?? '',
   authAudience: process.env.CLOUDFLARE_AUTH_AUDIENCE ?? '',
@@ -47,6 +47,14 @@ function getR2Client() {
 export function assetUrl(key: string) {
   const base = cloudflareConfig.r2PublicUrl.replace(/\/$/, '');
   return base ? `${base}/${key.replace(/^\//, '')}` : `/media/${key.replace(/^\//, '')}`;
+}
+
+export async function uploadObject(filename: string, contentType: string, body: Buffer) {
+  const client = getR2Client();
+  const safeFilename = normalizeFilename(filename);
+  const key = `uploads/${Date.now()}-${safeFilename}`;
+  await client.send(new PutObjectCommand({ Bucket: cloudflareConfig.r2Bucket, Key: key, ContentType: contentType || 'application/octet-stream', Body: body }));
+  return { publicUrl: assetUrl(key), key };
 }
 
 export async function createSignedUploadUrl(filename: string, contentType: string) {

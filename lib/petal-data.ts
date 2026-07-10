@@ -4,7 +4,10 @@ export const navItems = [
   ['Home', '/'], ['Shop', '/shop'], ['Collections', '/collections'], ['Custom Orders', '/custom-orders'], ['About', '/about'], ['Gallery', '/gallery'], ['Reviews', '/reviews'], ['FAQ', '/faq'], ['Contact', '/contact']
 ] as const;
 
-export const categories = ['Resin Coasters', 'Serving Trays', 'Bookmarks', 'Jewelry', 'Wall Art', 'Clocks', 'Wedding Keepsakes', 'Keychains', 'Pressed Flower Art', 'Ocean Collection', 'Personalized Gifts', 'Corporate Gifts'];
+export type Category = { name: string; slug: string; photoUrl: string };
+export const categoryNames = ['Resin Coasters', 'Serving Trays', 'Bookmarks', 'Jewelry', 'Wall Art', 'Clocks', 'Wedding Keepsakes', 'Keychains', 'Pressed Flower Art', 'Ocean Collection', 'Personalized Gifts', 'Corporate Gifts'];
+export function toCategorySlug(value: string) { return value.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-'); }
+export const categories: Category[] = categoryNames.map((name) => ({ name, slug: toCategorySlug(name), photoUrl: '' }));
 export const collections = ['Wedding Collection', 'Ocean Collection', 'Botanical Collection', 'Luxury Collection', 'Minimal Collection', 'Festive Collection', 'Home Décor', 'Jewelry', 'Gift Collection', 'Corporate Collection'];
 export const filters = ['Under ₹1,000', '₹1,000–₹3,000', 'Made to order', 'Ready to ship', 'Wedding gifts', 'Home décor', 'Jewelry', 'Sort: newest'];
 
@@ -16,15 +19,17 @@ export type Product = {
   stock: string;
   material: string;
   badge: string;
+  category: string;
+  imageUrls: string[];
 };
 
 export const products: Product[] = [
-  { slug: 'rose-garden-coaster-set', name: 'Rose Garden Coaster Set', price: '₹1,499', rating: 5, stock: 'In stock', material: 'Botanical resin', badge: 'Customizable' },
-  { slug: 'ocean-lace-serving-tray', name: 'Ocean Lace Serving Tray', price: '₹2,999', rating: 5, stock: 'Low stock', material: 'Ocean resin', badge: 'Best seller' },
-  { slug: 'lavender-memory-bookmark', name: 'Lavender Memory Bookmark', price: '₹499', rating: 5, stock: 'In stock', material: 'Pressed flowers', badge: 'Personalized' },
-  { slug: 'golden-petal-pendant', name: 'Golden Petal Pendant', price: '₹899', rating: 5, stock: 'In stock', material: 'Jewelry resin', badge: 'Gift ready' },
-  { slug: 'wedding-bloom-clock', name: 'Wedding Bloom Clock', price: '₹4,499', rating: 5, stock: 'Made to order', material: 'Keepsake resin', badge: 'Wedding' },
-  { slug: 'memory-flower-wall-art', name: 'Memory Flower Wall Art', price: '₹6,999', rating: 5, stock: 'Made to order', material: 'Archival resin', badge: 'Heirloom' }
+  { slug: 'rose-garden-coaster-set', name: 'Rose Garden Coaster Set', price: '₹1,499', rating: 5, stock: 'In stock', material: 'Botanical resin', badge: 'Customizable', category: 'Resin Coasters', imageUrls: [] },
+  { slug: 'ocean-lace-serving-tray', name: 'Ocean Lace Serving Tray', price: '₹2,999', rating: 5, stock: 'Low stock', material: 'Ocean resin', badge: 'Best seller', category: 'Serving Trays', imageUrls: [] },
+  { slug: 'lavender-memory-bookmark', name: 'Lavender Memory Bookmark', price: '₹499', rating: 5, stock: 'In stock', material: 'Pressed flowers', badge: 'Personalized', category: 'Bookmarks', imageUrls: [] },
+  { slug: 'golden-petal-pendant', name: 'Golden Petal Pendant', price: '₹899', rating: 5, stock: 'In stock', material: 'Jewelry resin', badge: 'Gift ready', category: 'Jewelry', imageUrls: [] },
+  { slug: 'wedding-bloom-clock', name: 'Wedding Bloom Clock', price: '₹4,499', rating: 5, stock: 'Made to order', material: 'Keepsake resin', badge: 'Wedding', category: 'Clocks', imageUrls: [] },
+  { slug: 'memory-flower-wall-art', name: 'Memory Flower Wall Art', price: '₹6,999', rating: 5, stock: 'Made to order', material: 'Archival resin', badge: 'Heirloom', category: 'Wall Art', imageUrls: [] }
 ];
 
 export const reasons = [
