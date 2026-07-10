@@ -22,7 +22,7 @@ export default function CheckoutPage() {
     const product = products.find((entry) => entry.slug === item.slug);
     if (!product) return sum;
     return sum + priceToNumber(product.price) * item.quantity;
-  }, 0), [cart]);
+  }, 0), [cart, products]);
 
   const submitOrder = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

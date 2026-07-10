@@ -40,16 +40,40 @@ export function AdminConsole() {
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(true);
 
-  const refreshProducts = async () => {
+  const loadProducts = async () => {
     const response = await fetch('/api/admin/products', { cache: 'no-store' });
     const payload = await parseResponse(response);
-    setProducts(payload.products ?? []);
+    return payload.products ?? [];
+  };
+
+  const refreshProducts = async () => {
+    const nextProducts = await loadProducts();
+    setProducts(nextProducts);
   };
 
   useEffect(() => {
-    refreshProducts()
-      .catch((error) => setStatus((error as Error).message))
-      .finally(() => setLoading(false));
+    let active = true;
+
+    loadProducts()
+      .then((nextProducts) => {
+        if (active) {
+          setProducts(nextProducts);
+        }
+      })
+      .catch((error) => {
+        if (active) {
+          setStatus((error as Error).message);
+        }
+      })
+      .finally(() => {
+        if (active) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   const saveProduct = async () => {
