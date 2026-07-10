@@ -11,7 +11,7 @@ function priceToNumber(price: string) {
 }
 
 export default function CheckoutPage() {
-  const { cart, account, placeOrder } = useStore();
+  const { cart, account, clearCart } = useStore();
   const { products } = useProducts();
   const [name, setName] = useState(account?.name ?? '');
   const [email, setEmail] = useState(account?.email ?? '');
@@ -26,15 +26,23 @@ export default function CheckoutPage() {
     return sum + priceToNumber(product.price) * item.quantity;
   }, 0), [cart, products]);
 
-  const submitOrder = (event: FormEvent<HTMLFormElement>) => {
+  const submitOrder = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!name || !email || !address || cart.length === 0) return;
-    const result = placeOrder({ name, email, address });
-    if (!result.ok) {
-      setStatus(result.message ?? 'Could not place order.');
+    setStatus('Saving your order…');
+    const response = await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, address, items: cart })
+    });
+    const data = await response.json() as { order?: { id: string }; error?: string };
+    if (!response.ok || !data.order) {
+      setStatus(data.error ?? 'Could not place order.');
       return;
     }
-    setOrderId(result.orderId ?? '');
+    clearCart();
+    setOrderId(data.order.id);
+    setStatus('');
     setPlaced(true);
   };
 
