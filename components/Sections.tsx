@@ -6,7 +6,13 @@ import { adminModules, blogPosts, categories, collections, filters, products, re
 import { useStore } from './StoreProvider';
 
 export function SectionTitle({ eyebrow, title, text }: { eyebrow: string; title: string; text?: string }) {
-  return <div data-reveal className="mx-auto mb-12 max-w-3xl text-center"><p className="font-button text-xs uppercase tracking-[.45em] text-gold">{eyebrow}</p><h2 className="mt-3 font-heading text-5xl md:text-7xl">{title}</h2>{text && <p className="mt-5 text-lg leading-8 text-charcoal/70">{text}</p>}</div>;
+  return (
+    <div data-reveal className="mx-auto mb-12 max-w-3xl text-center">
+      <p className="font-button text-xs uppercase tracking-[.45em] text-gold">{eyebrow}</p>
+      <h2 className="mt-3 font-heading text-5xl md:text-7xl">{title}</h2>
+      {text && <p className="mt-5 text-lg leading-8 text-charcoal/70">{text}</p>}
+    </div>
+  );
 }
 export function ProductCard({ product }: { product: Product }) {
   const { addToCart, isInWishlist, toggleWishlist } = useStore();
