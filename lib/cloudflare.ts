@@ -49,10 +49,14 @@ export function assetUrl(key: string) {
   return base ? `${base}/${key.replace(/^\//, '')}` : `/media/${key.replace(/^\//, '')}`;
 }
 
-export async function uploadObject(filename: string, contentType: string, body: Buffer) {
+function normalizeFolder(folder: string) {
+  return folder.replace(/[^a-zA-Z0-9/_-]/g, '-').replace(/-+/g, '-').replace(/^\/+|\/+$/g, '') || 'uploads';
+}
+
+export async function uploadObject(filename: string, contentType: string, body: Buffer, folder = 'uploads') {
   const client = getR2Client();
   const safeFilename = normalizeFilename(filename);
-  const key = `uploads/${Date.now()}-${safeFilename}`;
+  const key = `${normalizeFolder(folder)}/${Date.now()}-${safeFilename}`;
   await client.send(new PutObjectCommand({ Bucket: cloudflareConfig.r2Bucket, Key: key, ContentType: contentType || 'application/octet-stream', Body: body }));
   return { publicUrl: assetUrl(key), key };
 }

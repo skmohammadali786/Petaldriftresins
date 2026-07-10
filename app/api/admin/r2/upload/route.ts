@@ -12,7 +12,8 @@ export async function POST(request: NextRequest) {
       if (!(file instanceof File)) {
         return NextResponse.json({ error: 'File is required.' }, { status: 400 });
       }
-      const upload = await uploadObject(file.name || 'mahis-art-upload.jpg', file.type || 'application/octet-stream', Buffer.from(await file.arrayBuffer()));
+      const folder = typeof formData.get('folder') === 'string' ? String(formData.get('folder')) : 'uploads';
+      const upload = await uploadObject(file.name || 'mahis-art-upload.jpg', file.type || 'application/octet-stream', Buffer.from(await file.arrayBuffer()), folder);
       return NextResponse.json(upload);
     }
 
