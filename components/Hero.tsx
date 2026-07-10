@@ -89,7 +89,7 @@ export function Hero() {
   const { cms, activeBanners } = useStore();
 
   return (
-    <section className="premium-gradient relative min-h-screen overflow-hidden pt-28">
+    <section className="premium-gradient relative min-h-screen overflow-hidden pt-28 text-charcoal">
       <div className="absolute inset-0 opacity-65">
         <ThreeHero />
       </div>
@@ -99,8 +99,8 @@ export function Hero() {
           <h1 className="mt-5 max-w-4xl font-heading text-7xl leading-[.9] text-balance md:text-8xl lg:text-9xl">{cms.hero.title}</h1>
           <p className="mt-8 max-w-xl text-xl leading-9 text-charcoal/70">{cms.hero.description}</p>
           <div className="mt-10 flex flex-wrap gap-4">
-            <Link className="magnetic ripple rounded-full bg-charcoal px-8 py-4 font-button text-white" href={cms.hero.primaryCtaHref}>{cms.hero.primaryCtaLabel}</Link>
-            <Link className="magnetic ripple rounded-full border border-gold/40 bg-white/70 px-8 py-4 font-button" href={cms.hero.secondaryCtaHref}>{cms.hero.secondaryCtaLabel}</Link>
+            <Link className="magnetic ripple rounded-full bg-gold px-8 py-4 font-button text-charcoal" href={cms.hero.primaryCtaHref}>{cms.hero.primaryCtaLabel}</Link>
+            <Link className="magnetic ripple rounded-full border border-gold/40 bg-white/75 px-8 py-4 font-button text-charcoal backdrop-blur" href={cms.hero.secondaryCtaHref}>{cms.hero.secondaryCtaLabel}</Link>
           </div>
           <div className="mt-8 max-w-2xl">
             <HomeBannerCarousel banners={activeBanners} />
@@ -108,16 +108,16 @@ export function Hero() {
         </motion.div>
 
         <motion.div
-          className="glass relative min-h-[540px] overflow-hidden rounded-[3rem] p-6"
+          className="lux-panel relative min-h-[540px] overflow-hidden rounded-[3rem] p-6"
           initial={{ opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.2 }}
         >
-          <div className="h-full rounded-[2.4rem] bg-[radial-gradient(circle_at_35%_20%,#E8C8C1,transparent_24%),linear-gradient(145deg,#FAF8F5,#fff)] p-8 shadow-inner">
+          <div className="h-full rounded-[2.4rem] bg-[radial-gradient(circle_at_35%_20%,rgba(216,179,106,.38),transparent_24%),linear-gradient(145deg,#fff,#fbf6ec)] p-8 shadow-inner">
             <div className="float-right h-52 w-52 rounded-full bg-sage/30 blur-2xl" />
-            <div className="mt-24 space-y-3 rounded-boutique bg-white/70 p-8 shadow-boutique">
+            <div className="mt-24 space-y-3 rounded-boutique bg-white/75 p-8 shadow-boutique">
               {cms.collections.map((collection) => (
-                <div key={collection.id} className="rounded-2xl border border-charcoal/10 bg-white p-4">
+                <div key={collection.id} className="rounded-2xl border border-gold/20 bg-white/80 p-4 text-charcoal">
                   <h3 className="font-heading text-3xl">{collection.name}</h3>
                   <p className="mt-1 text-sm text-charcoal/65">{collection.description}</p>
                 </div>

@@ -5,7 +5,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ivory: '#FAF8F5', sage: '#A8C3A0', rose: '#E8C8C1', gold: '#D8B36A', lavender: '#D9D2F4', sand: '#F5EFE6', charcoal: '#2E2E2E'
+        ivory: '#FAF8F5', sage: '#A8C3A0', rose: '#E8C8C1', gold: '#D8B36A', lavender: '#D9D2F4', sand: '#F5EFE6', charcoal: '#2E2E2E', champagne: '#FFF8EA', espresso: '#FAF8F5'
       },
       fontFamily: {
         heading: ['var(--font-cormorant)'], body: ['var(--font-inter)'], button: ['var(--font-poppins)']
