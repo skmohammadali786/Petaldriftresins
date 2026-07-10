@@ -4,7 +4,10 @@ import { getProducts } from '@/lib/products';
 
 export const dynamic = 'force-dynamic';
 
-export default async function ShopPage() {
+export default async function ShopPage({ searchParams }: { searchParams?: Promise<{ category?: string; filter?: string }> }) {
   const products = await getProducts();
-  return <SiteChrome><section className="px-6 pb-10 pt-36"><SectionTitle eyebrow="Shop" title="A calm boutique catalogue" text="Filter by price, category, color, material, occasion, gift type, availability, and sorting. Grid and list views are prepared for product data." /></section><ProductGrid withFilters productsList={products} /><CategoryGrid /></SiteChrome>;
+  const params = await searchParams;
+  const activeCategory = params?.category || params?.filter;
+
+  return <SiteChrome><section className="px-6 pb-10 pt-36"><SectionTitle eyebrow="Shop" title={activeCategory ? `Shop ${activeCategory}` : 'A calm boutique catalogue'} text="Use the streamlined filter bar or category quick-shop cards to get to the right resin pieces faster." /></section><ProductGrid withFilters productsList={products} activeCategory={activeCategory} /><CategoryGrid /></SiteChrome>;
 }
