@@ -27,47 +27,39 @@ const ACCOUNT_KEY = 'petaldrift_account';
 
 const StoreContext = createContext<StoreContextValue | null>(null);
 
+function readFromStorage<T>(key: string, fallback: T): T {
+  if (typeof window === 'undefined') return fallback;
+  try {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) as T : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 export function StoreProvider({ children }: { children: React.ReactNode }) {
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [wishlist, setWishlist] = useState<string[]>([]);
-  const [account, setAccount] = useState<Account>(null);
-  const [hydrated, setHydrated] = useState(false);
+  const [cart, setCart] = useState<CartItem[]>(() => readFromStorage(CART_KEY, []));
+  const [wishlist, setWishlist] = useState<string[]>(() => readFromStorage(WISHLIST_KEY, []));
+  const [account, setAccount] = useState<Account>(() => readFromStorage(ACCOUNT_KEY, null));
 
   useEffect(() => {
-    try {
-      const cartRaw = localStorage.getItem(CART_KEY);
-      const wishlistRaw = localStorage.getItem(WISHLIST_KEY);
-      const accountRaw = localStorage.getItem(ACCOUNT_KEY);
-      if (cartRaw) setCart(JSON.parse(cartRaw));
-      if (wishlistRaw) setWishlist(JSON.parse(wishlistRaw));
-      if (accountRaw) setAccount(JSON.parse(accountRaw));
-    } catch {
-      setCart([]);
-      setWishlist([]);
-      setAccount(null);
-    } finally {
-      setHydrated(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!hydrated) return;
+    if (typeof window === 'undefined') return;
     localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  }, [cart, hydrated]);
+  }, [cart]);
 
   useEffect(() => {
-    if (!hydrated) return;
+    if (typeof window === 'undefined') return;
     localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlist));
-  }, [wishlist, hydrated]);
+  }, [wishlist]);
 
   useEffect(() => {
-    if (!hydrated) return;
+    if (typeof window === 'undefined') return;
     if (account) {
       localStorage.setItem(ACCOUNT_KEY, JSON.stringify(account));
       return;
     }
     localStorage.removeItem(ACCOUNT_KEY);
-  }, [account, hydrated]);
+  }, [account]);
 
   const value = useMemo<StoreContextValue>(() => ({
     cart,
