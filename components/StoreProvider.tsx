@@ -5,7 +5,7 @@ import { products } from '@/lib/petal-data';
 import { AdminAudit, CmsContent, defaultCmsContent, getActiveBanners, OrderRecord, TrackingEvent, TrackingStatus } from '@/lib/site-content';
 
 type CartItem = { slug: string; quantity: number };
-type Account = { name: string; email: string } | null;
+type Account = { name: string; email: string; mobile?: string } | null;
 
 type PlaceOrderInput = {
   name: string;
@@ -43,7 +43,7 @@ type StoreContextValue = {
   clearCart: () => void;
   isInWishlist: (slug: string) => boolean;
   toggleWishlist: (slug: string) => void;
-  loginOrSignup: (name: string, email: string) => void;
+  loginOrSignup: (name: string, email: string, mobile?: string) => void;
   logout: () => void;
   placeOrder: (input: PlaceOrderInput) => { ok: boolean; orderId?: string; message?: string };
   updateOrderTracking: (input: {
@@ -180,7 +180,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     isInWishlist: (slug) => wishlist.includes(slug),
     toggleWishlist: (slug) =>
       setWishlist((current) => (current.includes(slug) ? current.filter((item) => item !== slug) : [...current, slug])),
-    loginOrSignup: (name, email) => setAccount({ name, email: email.trim().toLowerCase() }),
+    loginOrSignup: (name, email, mobile) => setAccount({ name, email: email.trim().toLowerCase(), mobile: mobile?.trim() }),
     logout: () => setAccount(null),
     placeOrder: ({ name, email, address }) => {
       if (!name || !email || !address || cart.length === 0) {
