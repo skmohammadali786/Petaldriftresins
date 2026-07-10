@@ -13,15 +13,12 @@ export function HomeBannerCarousel({ banners }: { banners: Banner[] }) {
     return () => clearInterval(timer);
   }, [banners.length]);
 
-  useEffect(() => {
-    if (index >= banners.length) setIndex(0);
-  }, [banners.length, index]);
-
   if (banners.length === 0) {
     return <div className="lux-panel rounded-[2rem] p-5 text-sm text-charcoal/70">No published banners. Enable banners from the admin panel.</div>;
   }
 
-  const banner = banners[index];
+  const safeIndex = index % banners.length;
+  const banner = banners[safeIndex];
 
   return (
     <div className="lux-panel group relative overflow-hidden rounded-[2.2rem] p-6 text-charcoal shadow-boutique">
@@ -41,7 +38,7 @@ export function HomeBannerCarousel({ banners }: { banners: Banner[] }) {
                 key={item.id}
                 onClick={() => setIndex(itemIndex)}
                 aria-label={`Show banner ${itemIndex + 1}`}
-                className={`h-2.5 rounded-full transition-all ${itemIndex === index ? 'w-9 bg-gold' : 'w-2.5 bg-charcoal/20 hover:bg-charcoal/45'}`}
+                className={`h-2.5 rounded-full transition-all ${itemIndex === safeIndex ? 'w-9 bg-gold' : 'w-2.5 bg-charcoal/20 hover:bg-charcoal/45'}`}
               />
             ))}
           </div>

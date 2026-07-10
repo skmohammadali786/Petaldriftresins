@@ -17,11 +17,11 @@ function ThreeHero() {
     const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
     camera.position.z = 5;
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     mountNode.appendChild(renderer.domElement);
 
-    const geometry = new THREE.TorusKnotGeometry(1.4, 0.18, 220, 18);
+    const geometry = new THREE.TorusKnotGeometry(1.4, 0.18, 120, 12);
     const material = new THREE.MeshPhysicalMaterial({
       color: '#D8B36A',
       roughness: 0.22,
@@ -61,6 +61,7 @@ function ThreeHero() {
     let frame = 0;
     const animate = () => {
       frame = requestAnimationFrame(animate);
+      if (document.hidden) return;
       mesh.rotation.x += 0.0018 + pointer.y * 0.003;
       mesh.rotation.y += 0.0024 + pointer.x * 0.003;
       renderer.render(scene, camera);
@@ -68,13 +69,13 @@ function ThreeHero() {
 
     resize();
     animate();
-    window.addEventListener('resize', resize);
-    window.addEventListener('mousemove', move);
+    window.addEventListener('resize', resize, { passive: true });
+    window.addEventListener('pointermove', move, { passive: true });
 
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener('resize', resize);
-      window.removeEventListener('mousemove', move);
+      window.removeEventListener('pointermove', move);
       renderer.dispose();
       geometry.dispose();
       material.dispose();

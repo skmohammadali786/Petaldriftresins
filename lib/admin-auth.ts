@@ -36,6 +36,10 @@ function sha256(value: string) {
   return createHash('sha256').update(value).digest('hex');
 }
 
+function isSha256Hash(value: string) {
+  return /^[a-f0-9]{64}$/i.test(value.trim());
+}
+
 function configuredPasswordHash() {
   const explicitHash = process.env.ADMIN_PANEL_PASSWORD_SHA256?.trim().toLowerCase();
   if (explicitHash) return explicitHash;
@@ -47,7 +51,13 @@ export function isValidAdminPassword(password: string) {
   const configuredPassword = process.env.ADMIN_PANEL_PASSWORD ?? '';
   const passwordHash = configuredPasswordHash();
   if (!password) return false;
-  if (passwordHash) return safeEqual(sha256(password), passwordHash);
+  if (passwordHash) {
+    const normalizedPassword = password.trim().toLowerCase();
+    if (isSha256Hash(normalizedPassword) && safeEqual(normalizedPassword, passwordHash)) {
+      return true;
+    }
+    return safeEqual(sha256(password), passwordHash);
+  }
   if (!configuredPassword) return false;
   return safeEqual(password, configuredPassword);
 }
