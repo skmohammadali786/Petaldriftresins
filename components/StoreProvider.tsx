@@ -57,6 +57,9 @@ type StoreContextValue = {
   updateBanner: (input: BannerUpdateInput) => void;
   removeBanner: (id: string) => void;
   moveBanner: (id: string, direction: 'up' | 'down') => void;
+  addCategory: (name: string) => void;
+  updateCategory: (index: number, name: string) => void;
+  removeCategory: (index: number) => void;
   updateHero: (input: Partial<CmsContent['hero']>) => void;
 };
 
@@ -297,6 +300,25 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         };
       });
       addAudit('cms.banner.reordered', id);
+    },
+    addCategory: (name) => {
+      if (!canManageContent) return;
+      const trimmed = name.trim();
+      if (!trimmed) return;
+      setCms((current) => ({ ...current, categories: [...(current.categories ?? []), trimmed] }));
+      addAudit('cms.category.created', trimmed);
+    },
+    updateCategory: (index, name) => {
+      if (!canManageContent) return;
+      const trimmed = name.trim();
+      if (!trimmed) return;
+      setCms((current) => ({ ...current, categories: (current.categories ?? []).map((category, idx) => (idx === index ? trimmed : category)) }));
+      addAudit('cms.category.updated', trimmed);
+    },
+    removeCategory: (index) => {
+      if (!canManageContent) return;
+      setCms((current) => ({ ...current, categories: (current.categories ?? []).filter((_, idx) => idx !== index) }));
+      addAudit('cms.category.deleted', String(index));
     },
     updateHero: (input) => {
       if (!canManageContent) return;

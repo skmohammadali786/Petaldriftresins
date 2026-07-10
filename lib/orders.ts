@@ -8,7 +8,7 @@ type CreateOrderInput = {
   accountName: string;
   accountEmail: string;
   shippingAddress: string;
-  items: Array<{ slug: string; quantity: number }>;
+  items: Array<{ slug: string; quantity: number; name?: string; unitPrice?: number; customDetails?: string }>;
 };
 
 const memoryOrders = new Map<string, OrderRecord>();
@@ -84,9 +84,12 @@ export async function createOrder(input: CreateOrderInput) {
   const orderItems = input.items.flatMap((line) => {
     const product = products.find((entry) => entry.slug === line.slug);
     const quantity = Math.max(1, Math.floor(Number(line.quantity) || 1));
-    if (!product) return [];
+    if (!product) {
+      if (!line.name?.trim()) return [];
+      return [{ slug: line.slug || uid('custom'), name: line.name.trim(), quantity, unitPrice: Number(line.unitPrice) || 0, customDetails: line.customDetails?.trim() }];
+    }
     const unitPrice = Number(product.price.replace(/[^0-9.]/g, '')) || 0;
-    return [{ slug: product.slug, name: product.name, quantity, unitPrice }];
+    return [{ slug: product.slug, name: product.name, quantity, unitPrice, customDetails: line.customDetails?.trim() }];
   });
 
   if (orderItems.length === 0) throw new Error('No valid products found in cart.');
