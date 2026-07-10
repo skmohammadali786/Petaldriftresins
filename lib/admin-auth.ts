@@ -1,10 +1,14 @@
 import { getCurrentUser } from '@/lib/cloudflare';
-import { createHmac, timingSafeEqual } from 'node:crypto';
+import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
 
 export const ADMIN_PANEL_COOKIE_NAME = 'petal_admin_session';
 
 function createSessionToken(password: string) {
   return createHmac('sha256', password).update('petal-admin-session').digest('hex');
+}
+
+function getSessionSecret() {
+  return configuredPasswordHash() || process.env.ADMIN_PANEL_PASSWORD || '';
 }
 
 function safeEqual(left: string, right: string) {
@@ -28,16 +32,28 @@ function getCookieValue(cookieHeader: string | null, name: string) {
   return '';
 }
 
+function sha256(value: string) {
+  return createHash('sha256').update(value).digest('hex');
+}
+
+function configuredPasswordHash() {
+  const explicitHash = process.env.ADMIN_PANEL_PASSWORD_SHA256?.trim().toLowerCase();
+  if (explicitHash) return explicitHash;
+  const configuredPassword = process.env.ADMIN_PANEL_PASSWORD ?? '';
+  return /^[a-f0-9]{64}$/i.test(configuredPassword) ? configuredPassword.toLowerCase() : '';
+}
+
 export function isValidAdminPassword(password: string) {
   const configuredPassword = process.env.ADMIN_PANEL_PASSWORD ?? '';
-  if (!configuredPassword || !password) {
-    return false;
-  }
+  const passwordHash = configuredPasswordHash();
+  if (!password) return false;
+  if (passwordHash) return safeEqual(sha256(password), passwordHash);
+  if (!configuredPassword) return false;
   return safeEqual(password, configuredPassword);
 }
 
 export function hasAdminPasswordSession(headers: Headers) {
-  const configuredPassword = process.env.ADMIN_PANEL_PASSWORD ?? '';
+  const configuredPassword = getSessionSecret();
   if (!configuredPassword) {
     return false;
   }
@@ -49,7 +65,7 @@ export function hasAdminPasswordSession(headers: Headers) {
 }
 
 export function createAdminSessionCookieValue() {
-  const configuredPassword = process.env.ADMIN_PANEL_PASSWORD ?? '';
+  const configuredPassword = getSessionSecret();
   if (!configuredPassword) {
     throw new Error('ADMIN_PANEL_PASSWORD is not configured.');
   }

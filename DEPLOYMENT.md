@@ -91,3 +91,28 @@ Option B (separate admin Vercel project):
 4. Click save — data is written to D1.
 5. Refresh storefront pages (`/`, `/shop`, `/products/[slug]`, `/search`, `/cart`, `/wishlist`, `/checkout`) to see updated products immediately.
 6. Upload images in **Cloudflare R2 upload** and copy returned URL into product/content data.
+
+## Cloudflare Access login setup
+
+This storefront reads Cloudflare Access identity from the `cf-access-authenticated-user-email` request header. Cloudflare's Access docs also note that authenticated requests include a `Cf-Access-Jwt-Assertion` header and browser requests include a `CF_Authorization` cookie for JWT validation.
+
+1. In Cloudflare Zero Trust, create an **Access application** for the site hostname (for example `petaldriftresins.com/*`).
+2. Choose your login method such as One-time PIN, Google, GitHub, or another identity provider.
+3. Add an Access policy that allows your customer/admin users to reach the website.
+4. Add admin emails to the deployment variable `ADMIN_EMAILS` as a comma-separated list. Any authenticated Cloudflare Access email in this list becomes an admin.
+5. Deploy behind Cloudflare so the origin receives the `cf-access-authenticated-user-email` header. The app uses `/api/auth/session` and `/dashboard` to show whether Cloudflare Access is connected.
+
+## Admin password hash setup
+
+You can use a plaintext admin password or a SHA-256 password hash:
+
+- Plaintext option: set `ADMIN_PANEL_PASSWORD` to the exact password you want to type.
+- Hash option: set `ADMIN_PANEL_PASSWORD_SHA256` to a 64-character SHA-256 hash. For convenience, if `ADMIN_PANEL_PASSWORD` itself is a 64-character hex string, the app treats it as a SHA-256 hash too.
+
+For the hash you provided, set either:
+
+```bash
+ADMIN_PANEL_PASSWORD_SHA256=bdf3146833fdae915446a6e87d6a7a135aead3c650d7f843c57abeee22fab95b
+```
+
+or set `ADMIN_PANEL_PASSWORD` to that same 64-character value. Then log in by typing the original password whose SHA-256 digest equals that hash, not the hash text itself.
