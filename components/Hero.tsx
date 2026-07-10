@@ -8,13 +8,14 @@ import * as THREE from 'three';
 function ThreeHero() {
   const mount = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (!mount.current) return;
+    const mountNode = mount.current;
+    if (!mountNode) return;
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
     camera.position.z = 5;
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    mount.current.appendChild(renderer.domElement);
+    mountNode.appendChild(renderer.domElement);
     const geometry = new THREE.TorusKnotGeometry(1.4, 0.18, 180, 16);
     const material = new THREE.MeshStandardMaterial({ color: '#D8B36A', roughness: 0.38, metalness: 0.28, transparent: true, opacity: 0.22 });
     const mesh = new THREE.Mesh(geometry, material);
@@ -23,13 +24,13 @@ function ThreeHero() {
     const light = new THREE.PointLight('#fff4dc', 2);
     light.position.set(3, 2, 4);
     scene.add(light);
-    const resize = () => { const width = mount.current?.clientWidth || window.innerWidth; const height = mount.current?.clientHeight || window.innerHeight; camera.aspect = width / height; camera.updateProjectionMatrix(); renderer.setSize(width, height); };
+    const resize = () => { const width = mountNode.clientWidth || window.innerWidth; const height = mountNode.clientHeight || window.innerHeight; camera.aspect = width / height; camera.updateProjectionMatrix(); renderer.setSize(width, height); };
     const pointer = { x: 0, y: 0 };
     const move = (event: MouseEvent) => { pointer.x = (event.clientX / window.innerWidth - 0.5) * 0.36; pointer.y = (event.clientY / window.innerHeight - 0.5) * 0.24; };
     let frame = 0;
     const animate = () => { frame = requestAnimationFrame(animate); mesh.rotation.x += 0.002 + pointer.y * 0.004; mesh.rotation.y += 0.003 + pointer.x * 0.004; renderer.render(scene, camera); };
     resize(); animate(); window.addEventListener('resize', resize); window.addEventListener('mousemove', move);
-    return () => { cancelAnimationFrame(frame); window.removeEventListener('resize', resize); window.removeEventListener('mousemove', move); renderer.dispose(); geometry.dispose(); material.dispose(); mount.current?.replaceChildren(); };
+    return () => { cancelAnimationFrame(frame); window.removeEventListener('resize', resize); window.removeEventListener('mousemove', move); renderer.dispose(); geometry.dispose(); material.dispose(); mountNode.replaceChildren(); };
   }, []);
   return <div ref={mount} className="h-full w-full" />;
 }
