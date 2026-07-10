@@ -9,9 +9,12 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1084.0",
+    "@aws-sdk/s3-request-presigner": "^3.1084.0",
     "framer-motion": "latest",
     "gsap": "latest",
     "lenis": "latest",
+    "lottie-react": "latest",
     "lucide-react": "latest",
     "next": "latest",
     "react": "latest",
@@ -19,8 +22,7 @@
     "react-hook-form": "latest",
     "swiper": "latest",
     "three": "latest",
-    "zod": "latest",
-    "lottie-react": "latest"
+    "zod": "latest"
   },
   "devDependencies": {
     "@types/node": "latest",

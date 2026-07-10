@@ -4,11 +4,12 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { SiteChrome } from '@/components/SiteChrome';
 import { useStore } from '@/components/StoreProvider';
-import { products } from '@/lib/petal-data';
+import { useProducts } from '@/lib/use-products';
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
   const { addToCart, isInWishlist, toggleWishlist } = useStore();
+  const { products } = useProducts();
 
   const results = useMemo(() => {
     const term = query.trim().toLowerCase();

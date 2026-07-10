@@ -5,7 +5,33 @@ This repository is prepared for two Vercel deployments from the same codebase:
 1. **Storefront**: public customer website at `petaldrift.com`.
 2. **Admin**: protected dashboard at `admin.petaldrift.com`, using the `/admin` route.
 
-## 1. Cloudflare R2 media storage
+## 1. Cloudflare D1 (live product data)
+
+The admin panel now writes products to Cloudflare D1, and storefront pages read from the same table, so product edits are visible immediately.
+
+1. In Cloudflare, create a D1 database (for example `petal-drift-db`).
+2. Create this table in D1:
+   ```sql
+   CREATE TABLE IF NOT EXISTS products (
+     slug TEXT PRIMARY KEY,
+     name TEXT NOT NULL,
+     price TEXT NOT NULL,
+     rating INTEGER NOT NULL DEFAULT 5,
+     stock TEXT NOT NULL,
+     material TEXT NOT NULL,
+     badge TEXT NOT NULL,
+     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+   );
+   ```
+3. Create a Cloudflare API token with D1 edit/query permissions for this database.
+4. Add these Vercel environment variables:
+   - `CLOUDFLARE_ACCOUNT_ID`
+   - `CLOUDFLARE_D1_DATABASE_ID`
+   - `CLOUDFLARE_API_TOKEN`
+
+> If D1 is empty on first run, the app seeds the table with the existing default products.
+
+## 2. Cloudflare R2 media storage
 
 1. In Cloudflare, create an R2 bucket named `petal-drift-media`.
 2. Create an R2 API token with Object Read and Object Write permissions for that bucket.
@@ -16,58 +42,51 @@ This repository is prepared for two Vercel deployments from the same codebase:
    - `CLOUDFLARE_R2_ACCESS_KEY_ID`
    - `CLOUDFLARE_R2_SECRET_ACCESS_KEY`
    - `NEXT_PUBLIC_R2_PUBLIC_URL`
-5. Store all product, gallery, review, blog, and custom-order upload images under organized prefixes such as `products/`, `gallery/`, `reviews/`, and `custom-orders/`.
+5. In admin panel, use **Cloudflare R2 upload** to upload files; uploads are signed server-side and saved to `uploads/` keys.
 
-## 2. Cloudflare authentication for admin
+## 3. Cloudflare Access authentication for admin login
 
-Cloudflare Access is the recommended Cloudflare auth layer for the admin site.
+Cloudflare Access is the auth layer for `/admin` and all `/api/admin/*` routes.
 
 1. In Cloudflare Zero Trust, create an Access application for `admin.petaldrift.com`.
-2. Add allowed identities, for example your email and studio team emails.
-3. Add policies for Admin, Manager, and Support roles.
-4. Add these variables in Vercel:
+2. Add allowed identities (your email and your team emails).
+3. Add Vercel environment variables:
    - `CLOUDFLARE_AUTH_ISSUER`
    - `CLOUDFLARE_AUTH_AUDIENCE`
-   - `ADMIN_EMAILS`
-5. Protect `/admin` with Cloudflare Access at the DNS/application layer, then mirror role checks in the app before write actions.
+   - `ADMIN_EMAILS` (comma-separated, must include admin users)
+4. (Optional local dev) set `DEV_ADMIN_EMAIL` for development without Cloudflare headers.
+5. Keep Cloudflare Access policy enabled for admin domain.
 
-## 3. Vercel storefront deployment
+## 4. Vercel storefront deployment
 
 1. Import this GitHub repository into Vercel.
 2. Set Framework Preset to **Next.js**.
 3. Build command: `npm run build`.
-4. Output directory: leave default (`.next`). Do **not** set output directory to `admin`.
-5. Add the environment variables from `.env.example`.
-6. Add the production domain `petaldrift.com`.
+4. Output directory: leave default (`.next`).
+5. Add required env vars from `.env.example`.
+6. Add production domain `petaldrift.com`.
 
-## 4. Vercel admin deployment
+## 5. Vercel admin deployment
 
-Option A, simplest: use the same Vercel project and point `admin.petaldrift.com` to `/admin` through your navigation and Cloudflare Access.
+Option A (single project):
 
-Option B, separate Vercel project:
+1. Use the same Vercel project.
+2. Add `admin.petaldrift.com` domain.
+3. Route admin users to `/admin`.
+4. Protect domain with Cloudflare Access.
+
+Option B (separate admin Vercel project):
 
 1. Import the same repository a second time.
-2. Use the same build settings.
-3. Keep Vercel output directory at default (`.next`), and route users to `/admin` instead of trying to build from an `admin` folder.
-4. Add `NEXT_PUBLIC_ADMIN_MODE=true`.
-5. Add only `admin.petaldrift.com` as the domain.
-6. Protect it with Cloudflare Access.
+2. Keep build settings the same (`npm run build`, output `.next`).
+3. Add `admin.petaldrift.com` domain.
+4. Protect domain with Cloudflare Access.
 
-## 5. Cloudflare-first data layer
+## 6. Admin panel usage process
 
-For production, connect this app to **Cloudflare D1** (database) and **Cloudflare R2** (media files) so your full stack stays on Cloudflare-managed services. Recommended D1 tables:
-
-- `products`
-- `product_variants`
-- `collections`
-- `orders`
-- `order_items`
-- `customers`
-- `custom_order_requests`
-- `reviews`
-- `media_assets`
-- `blog_posts`
-- `coupons`
-- `settings`
-
-The admin panel already exposes management modules that map directly to these tables.
+1. Login to `admin.petaldrift.com` through Cloudflare Access.
+2. Open `/admin`.
+3. Add/edit/delete product entries in **Admin product** form.
+4. Click save — data is written to D1.
+5. Refresh storefront pages (`/`, `/shop`, `/products/[slug]`, `/search`, `/cart`, `/wishlist`, `/checkout`) to see updated products immediately.
+6. Upload images in **Cloudflare R2 upload** and copy returned URL into product/content data.
