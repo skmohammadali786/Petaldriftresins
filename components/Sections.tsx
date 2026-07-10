@@ -2,7 +2,7 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Heart, Star } from 'lucide-react';
-import { categories, filters, products, reasons, services } from '@/lib/petal-data';
+import { adminModules, blogPosts, categories, collections, filters, products, reasons, services, testimonials, type Product } from '@/lib/petal-data';
 import { useStore } from './StoreProvider';
 
 export function SectionTitle({ eyebrow, title, text }: { eyebrow: string; title: string; text?: string }) {
@@ -14,157 +14,15 @@ export function SectionTitle({ eyebrow, title, text }: { eyebrow: string; title:
     </div>
   );
 }
-
-export function ProductCard({ product = products[0] }: { product?: (typeof products)[number] }) {
+export function ProductCard({ product }: { product: Product }) {
   const { addToCart, isInWishlist, toggleWishlist } = useStore();
   const wished = isInWishlist(product.slug);
-
-  return (
-    <article data-reveal className="card-lift overflow-hidden rounded-boutique bg-white shadow-sm">
-      <Link href={`/products/${product.slug}`}>
-        <div className="relative h-80 bg-gradient-to-br from-lavender/55 via-white to-sand">
-          <span className="absolute left-5 top-5 rounded-full bg-white/75 px-4 py-2 text-xs font-semibold">3D preview</span>
-          <span className="absolute bottom-5 right-5 rounded-full bg-sage px-4 py-2 text-xs font-semibold text-white">{product.badge}</span>
-        </div>
-      </Link>
-      <div className="p-7">
-        <div className="flex text-gold">{[...Array(product.rating)].map((_, s) => <Star key={s} size={16} fill="currentColor" />)}</div>
-        <h3 className="mt-3 font-heading text-4xl">{product.name}</h3>
-        <p className="mt-2 text-sm text-charcoal/60">{product.material} · {product.stock}</p>
-        <div className="mt-6 flex items-center gap-3">
-          <strong className="text-xl">{product.price}</strong>
-          <button onClick={() => addToCart(product.slug)} className="ripple ml-auto flex-1 rounded-full bg-charcoal py-3 font-button text-white">Add to Cart</button>
-          <button
-            onClick={() => toggleWishlist(product.slug)}
-            aria-label={wished ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
-            className={`rounded-full border px-4 py-3 ${wished ? 'border-rose/40 bg-rose/20 text-rose' : ''}`}
-          >
-            <Heart size={18} fill={wished ? 'currentColor' : 'none'} />
-          </button>
-        </div>
-      </div>
-    </article>
-  );
+  return <article data-reveal className="card-lift overflow-hidden rounded-boutique bg-white shadow-sm"><Link href={`/products/${product.slug}`}><div className="relative h-80 bg-gradient-to-br from-lavender/55 via-white to-sand"><span className="absolute left-5 top-5 rounded-full bg-white/75 px-4 py-2 text-xs font-semibold">360° preview</span><span className="absolute bottom-5 right-5 rounded-full bg-sage px-4 py-2 text-xs font-semibold text-white">{product.badge}</span></div></Link><div className="p-7"><div className="flex text-gold">{[...Array(product.rating)].map((_, s) => <Star key={s} size={16} fill="currentColor" />)}</div><h3 className="mt-3 font-heading text-4xl">{product.name}</h3><p className="mt-2 text-sm text-charcoal/60">{product.material} · {product.stock}</p><div className="mt-6 flex items-center gap-3"><strong className="text-xl">{product.price}</strong><button onClick={() => addToCart(product.slug)} className="ripple ml-auto flex-1 rounded-full bg-charcoal py-3 font-button text-white">Add to Cart</button><button onClick={() => toggleWishlist(product.slug)} aria-label={wished ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`} className={`rounded-full border px-4 py-3 ${wished ? 'bg-rose/20 text-rose border-rose/40' : ''}`}><Heart size={18} fill={wished ? 'currentColor' : 'none'} /></button></div></div></article>;
 }
-
-export function CategoryGrid() {
-  return (
-    <section className="bg-white px-6 py-28">
-      <SectionTitle eyebrow="Boutique categories" title="Handmade pieces for every memory" text="Premium category cards with quick-shop overlays and subtle motion." />
-      <div className="mx-auto grid max-w-7xl gap-5 md:grid-cols-3 lg:grid-cols-4">
-        {categories.map((category) => (
-          <motion.article data-reveal key={category} whileHover={{ rotateX: 3, rotateY: -3 }} className="card-lift group rounded-boutique bg-ivory p-6">
-            <div className="mb-6 h-56 rounded-[1.5rem] bg-gradient-to-br from-rose/50 via-white to-sage/40 transition group-hover:scale-[1.02]" />
-            <h3 className="font-heading text-3xl">{category}</h3>
-            <p className="mt-2 text-sm text-charcoal/60">Quick shop · custom colors · premium resin</p>
-            <Link href="/shop" className="mt-5 inline-block rounded-full bg-white px-5 py-2 font-button text-sm shadow-glow opacity-0 transition group-hover:opacity-100">Quick Shop</Link>
-          </motion.article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-export function ProductGrid({ withFilters = false }: { withFilters?: boolean }) {
-  return (
-    <section className="bg-ivory px-6 py-28">
-      {withFilters && (
-        <div data-reveal className="mx-auto mb-8 grid max-w-7xl gap-3 md:grid-cols-4 lg:grid-cols-8">
-          {filters.map((filter) => (
-            <button key={filter} className="rounded-full border bg-white px-4 py-3 font-button text-xs">{filter}</button>
-          ))}
-        </div>
-      )}
-      <SectionTitle eyebrow="Best sellers" title="Gallery-worthy favorites" />
-      <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {products.map((product) => <ProductCard key={product.slug} product={product} />)}
-      </div>
-    </section>
-  );
-}
-
-export function CollectionsShowcase() {
-  const { cms } = useStore();
-
-  return (
-    <section className="px-6 py-28">
-      <div data-reveal className="mx-auto max-w-7xl overflow-hidden rounded-[3rem] bg-gradient-to-r from-rose/40 via-white to-sage/40 p-10 md:p-16">
-        <p className="font-button text-xs uppercase tracking-[.45em] text-gold">Seasonal collection</p>
-        <h2 className="mt-4 font-heading text-6xl md:text-8xl">A Garden You Can Hold Forever</h2>
-        <Link className="magnetic mt-8 inline-block rounded-full bg-white px-8 py-4 font-button shadow-boutique" href="/collections">Discover Collection</Link>
-      </div>
-      <div className="mx-auto mt-10 grid max-w-7xl gap-4 md:grid-cols-3">
-        {cms.collections.map((collection) => (
-          <div data-reveal key={collection.id} className="rounded-3xl border bg-white p-5 shadow-sm">
-            <h3 className="font-heading text-3xl">{collection.name}</h3>
-            <p className="mt-2 text-sm text-charcoal/65">{collection.description}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-export function WhyChoose() {
-  return (
-    <section className="px-6 py-28">
-      <SectionTitle eyebrow="Why Petal Drift" title="Crafted slowly, treasured forever" />
-      <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-4">
-        {reasons.map(({ icon: Icon, title, text }) => (
-          <div data-reveal key={title} className="card-lift rounded-boutique bg-ivory p-8 text-center">
-            <Icon className="mx-auto text-gold" size={42} />
-            <h3 className="mt-5 font-heading text-3xl">{title}</h3>
-            <p className="mt-3 text-sm leading-6 text-charcoal/65">{text}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-export function ServicesGrid() {
-  return (
-    <section className="bg-ivory px-6 py-24">
-      <SectionTitle eyebrow="Atelier services" title="Every resin creation you imagined" />
-      <div className="mx-auto grid max-w-7xl gap-5 md:grid-cols-4">
-        {services.map(({ icon: Icon, title }) => (
-          <div data-reveal key={title} className="rounded-boutique bg-white p-7 shadow-sm">
-            <Icon className="text-sage" />
-            <h3 className="mt-4 font-heading text-3xl">{title}</h3>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-export function SocialProof() {
-  const { cms } = useStore();
-
-  return (
-    <section className="bg-ivory px-6 py-28">
-      <SectionTitle eyebrow="Stories & social proof" title="Premium reviews and trusted delivery" />
-      <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-3">
-        {cms.testimonials.map((item) => (
-          <div data-reveal key={item.id} className="card-lift rounded-boutique bg-white p-8">
-            <div className="mb-6 h-48 rounded-3xl bg-gradient-to-br from-sand to-lavender/50" />
-            <h3 className="font-heading text-3xl">“{item.quote}”</h3>
-            <p className="mt-4 text-sm text-charcoal/65">{item.author} · {item.location}</p>
-            <div className="mt-4 flex text-gold">{[...Array(5)].map((_, s) => <Star key={s} size={16} fill="currentColor" />)}</div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-export function AdminPanel() {
-  return (
-    <section className="px-6 py-20">
-      <SectionTitle eyebrow="Operations suite" title="Role-based admin controls" text="Manage content publishing, banner scheduling, order tracking updates, and audit logs from one dashboard." />
-      <div className="mx-auto max-w-7xl rounded-[2rem] border bg-white p-6 text-charcoal/70 shadow-sm">
-        Admin users can control CMS blocks and hero content. Fulfillment users can update order milestones and courier tracking.
-      </div>
-    </section>
-  );
-}
+export function CategoryGrid() { return <section className="bg-white px-6 py-28"><SectionTitle eyebrow="Boutique categories" title="Handmade pieces for every memory" text="Luxury cards with hover glow, quick-shop overlays, image zoom, and soft product reveal movement." /><div className="mx-auto grid max-w-7xl gap-5 md:grid-cols-3 lg:grid-cols-4">{categories.map((category) => <motion.article data-reveal key={category} whileHover={{ rotateX: 3, rotateY: -3 }} className="card-lift group rounded-boutique bg-ivory p-6"><div className="mb-6 h-56 rounded-[1.5rem] bg-gradient-to-br from-rose/50 via-white to-sage/40 transition group-hover:scale-[1.02]" /><h3 className="font-heading text-3xl">{category}</h3><p className="mt-2 text-sm text-charcoal/60">Quick shop · custom colors · premium resin</p><Link href="/shop" className="mt-5 inline-block rounded-full bg-white px-5 py-2 font-button text-sm shadow-glow opacity-0 transition group-hover:opacity-100">Quick Shop</Link></motion.article>)}</div></section>; }
+export function ProductGrid({ withFilters = false, productsList = products }: { withFilters?: boolean; productsList?: Product[] }) { return <section className="bg-ivory px-6 py-28">{withFilters && <div data-reveal className="mx-auto mb-8 grid max-w-7xl gap-3 md:grid-cols-4 lg:grid-cols-8">{filters.map((filter) => <button key={filter} className="rounded-full border bg-white px-4 py-3 font-button text-xs">{filter}</button>)}</div>}<SectionTitle eyebrow="Best sellers" title="Gallery-worthy favorites" /><div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-2 lg:grid-cols-3">{productsList.map((product) => <ProductCard key={product.slug} product={product} />)}</div></section>; }
+export function CollectionsShowcase() { return <section className="px-6 py-28"><div data-reveal className="mx-auto max-w-7xl overflow-hidden rounded-[3rem] bg-gradient-to-r from-rose/40 via-white to-sage/40 p-10 md:p-16"><p className="font-button text-xs uppercase tracking-[.45em] text-gold">Seasonal collection</p><h2 className="mt-4 font-heading text-6xl md:text-8xl">A Garden You Can Hold Forever</h2><Link className="magnetic mt-8 inline-block rounded-full bg-white px-8 py-4 font-button shadow-boutique" href="/collections">Discover Collection</Link></div><div className="mx-auto mt-10 grid max-w-7xl gap-4 md:grid-cols-5">{collections.map((collection) => <div data-reveal key={collection} className="rounded-3xl border bg-white p-5 text-center font-medium shadow-sm">{collection}</div>)}</div></section>; }
+export function WhyChoose() { return <section className="px-6 py-28"><SectionTitle eyebrow="Why Petal Drift" title="Crafted slowly, treasured forever" /><div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-4">{reasons.map(({ icon: Icon, title, text }) => <div data-reveal key={title} className="card-lift rounded-boutique bg-ivory p-8 text-center"><Icon className="mx-auto text-gold" size={42} /><h3 className="mt-5 font-heading text-3xl">{title}</h3><p className="mt-3 text-sm leading-6 text-charcoal/65">{text}</p></div>)}</div></section>; }
+export function ServicesGrid() { return <section className="bg-ivory px-6 py-24"><SectionTitle eyebrow="Atelier services" title="Every resin creation you imagined" /><div className="mx-auto grid max-w-7xl gap-5 md:grid-cols-4">{services.map(({ icon: Icon, title }) => <div data-reveal key={title} className="rounded-boutique bg-white p-7 shadow-sm"><Icon className="text-sage" /><h3 className="mt-4 font-heading text-3xl">{title}</h3></div>)}</div></section>; }
+export function SocialProof() { return <section className="bg-ivory px-6 py-28"><SectionTitle eyebrow="Stories & social proof" title="Reviews, gallery, journal, and blooms" /><div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-3">{[...testimonials, ...blogPosts].map((item, i) => <div data-reveal key={item} className={`card-lift rounded-boutique bg-white p-8 ${i === 1 ? 'lg:row-span-2' : ''}`}><div className="mb-6 h-48 rounded-3xl bg-gradient-to-br from-sand to-lavender/50" /><h3 className="font-heading text-3xl">{item}</h3>{i < 3 && <div className="mt-4 flex text-gold">{[...Array(5)].map((_, s) => <Star key={s} size={16} fill="currentColor" />)}</div>}</div>)}</div></section>; }
+export function AdminPanel() { return <section className="px-6 py-28"><SectionTitle eyebrow="Operations suite" title="Complete admin panel" text="Manage products, orders, Cloudflare R2 media, Cloudflare auth users, content, coupons, inventory, analytics, SEO, homepage sections, and storefront settings from one Vercel-hosted dashboard." /><div className="mx-auto grid max-w-7xl gap-5 md:grid-cols-4">{adminModules.map((module) => <div data-reveal key={module} className="rounded-boutique border bg-white p-6 shadow-sm"><h3 className="font-heading text-3xl">{module}</h3><p className="mt-2 text-sm text-charcoal/60">Create, edit, publish, export, audit, and control permissions.</p></div>)}</div></section>; }
