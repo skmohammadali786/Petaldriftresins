@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const customer = await getCustomerFromCookie(request.cookies.get(CUSTOMER_COOKIE_NAME)?.value);
-    const payload = await request.json() as { name?: string; email?: string; address?: string; items?: Array<{ slug: string; quantity: number }> };
+    const payload = await request.json() as { name?: string; email?: string; address?: string; items?: Array<{ slug: string; quantity: number; name?: string; unitPrice?: number; customDetails?: string }> };
     const order = await createOrder({
       accountName: customer?.name ?? payload.name ?? '',
       accountEmail: customer?.email ?? payload.email ?? '',

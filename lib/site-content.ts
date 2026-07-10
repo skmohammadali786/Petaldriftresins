@@ -50,6 +50,7 @@ export type Testimonial = {
 export type CmsContent = {
   hero: HeroContent;
   banners: Banner[];
+  categories: string[];
   seo: SeoRecord[];
   pageBlocks: PageBlock[];
   collections: CollectionHighlight[];
@@ -82,7 +83,7 @@ export type OrderRecord = {
   courier: string;
   trackingNumber: string;
   events: TrackingEvent[];
-  items: Array<{ slug: string; name: string; quantity: number; unitPrice: number }>;
+  items: Array<{ slug: string; name: string; quantity: number; unitPrice: number; customDetails?: string }>;
   shippingAddress: string;
 };
 
@@ -114,6 +115,7 @@ export const defaultCmsContent: CmsContent = {
     secondaryCtaLabel: 'Create Custom Order',
     secondaryCtaHref: '/custom-orders'
   },
+  categories: ['Resin Coasters', 'Serving Trays', 'Bookmarks', 'Jewelry', 'Wall Art', 'Clocks', 'Wedding Keepsakes', 'Keychains', 'Pressed Flower Art', 'Ocean Collection', 'Personalized Gifts', 'Corporate Gifts'],
   banners: [
     {
       id: 'bnr-bridal',
