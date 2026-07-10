@@ -1,7 +1,6 @@
 'use client';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Sparkles } from 'lucide-react';
 import { useStore } from './StoreProvider';
 import { HomeBannerCarousel } from './HomeBannerCarousel';
 
@@ -16,7 +15,7 @@ export function Hero() {
         <div className="absolute bottom-10 left-1/2 h-80 w-80 rounded-full bg-sage/20 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto grid min-h-[760px] max-w-7xl items-center gap-8 px-6 pb-16 lg:grid-cols-[1.02fr_.98fr] lg:pb-20">
+      <div className="relative mx-auto grid min-h-[760px] max-w-7xl items-center px-6 pb-16 lg:pb-20">
         <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55 }}>
           <p className="font-button text-xs uppercase tracking-[.45em] text-gold">{cms.hero.eyebrow}</p>
           <h1 className="mt-5 max-w-4xl font-heading text-6xl leading-[.92] text-balance md:text-8xl lg:text-9xl">{cms.hero.title}</h1>
@@ -27,21 +26,6 @@ export function Hero() {
           </div>
           <div className="mt-8 max-w-2xl">
             <HomeBannerCarousel banners={activeBanners} />
-          </div>
-        </motion.div>
-
-        <motion.div
-          className="lux-panel relative overflow-hidden rounded-[2.5rem] p-5 md:p-6"
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.05 }}
-        >
-          <div className="relative grid min-h-[520px] place-items-center rounded-[2rem] bg-white/78 p-8 text-center shadow-inner">
-            <Sparkles className="text-gold" size={44} />
-            <div>
-              <p className="font-button text-xs uppercase tracking-[.35em] text-gold">Handmade in India</p>
-              
-            </div>
           </div>
         </motion.div>
       </div>
