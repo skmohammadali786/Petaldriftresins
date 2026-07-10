@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { products } from '@/lib/petal-data';
+import { categories as defaultCategories, products, toCategorySlug, type Category } from '@/lib/petal-data';
 import { AdminAudit, CmsContent, defaultCmsContent, getActiveBanners, OrderRecord, TrackingEvent, TrackingStatus } from '@/lib/site-content';
 
 type CartItem = { slug: string; quantity: number };
@@ -57,21 +57,21 @@ type StoreContextValue = {
   updateBanner: (input: BannerUpdateInput) => void;
   removeBanner: (id: string) => void;
   moveBanner: (id: string, direction: 'up' | 'down') => void;
-  addCategory: (name: string) => void;
-  updateCategory: (index: number, name: string) => void;
+  addCategory: (name: string, photoUrl?: string) => void;
+  updateCategory: (index: number, category: Partial<Category>) => void;
   removeCategory: (index: number) => void;
   updateHero: (input: Partial<CmsContent['hero']>) => void;
 };
 
-const CART_KEY = 'petaldrift_cart';
-const WISHLIST_KEY = 'petaldrift_wishlist';
-const ACCOUNT_KEY = 'petaldrift_account';
-const CMS_KEY = 'petaldrift_cms';
-const ORDERS_KEY = 'petaldrift_orders';
-const AUDIT_KEY = 'petaldrift_audits';
+const CART_KEY = 'mahisart_cart';
+const WISHLIST_KEY = 'mahisart_wishlist';
+const ACCOUNT_KEY = 'mahisart_account';
+const CMS_KEY = 'mahisart_cms';
+const ORDERS_KEY = 'mahisart_orders';
+const AUDIT_KEY = 'mahisart_audits';
 
-const CONTENT_ADMINS = ['admin@petaldrift.com'];
-const FULFILLMENT_ADMINS = ['fulfillment@petaldrift.com', 'admin@petaldrift.com'];
+const CONTENT_ADMINS = ['admin@mahisart.com'];
+const FULFILLMENT_ADMINS = ['fulfillment@mahisart.com', 'admin@mahisart.com'];
 
 const StoreContext = createContext<StoreContextValue | null>(null);
 
@@ -98,22 +98,37 @@ function priceToNumber(price: string) {
   return Number(price.replace(/[^0-9.]/g, '')) || 0;
 }
 
+function normalizeCmsContent(content: CmsContent): CmsContent {
+  const rawCategories = (content.categories?.length ? content.categories : defaultCategories) as unknown[];
+  return {
+    ...content,
+    categories: rawCategories.map((category) => {
+      if (typeof category === 'string') {
+        return { name: category, slug: toCategorySlug(category), photoUrl: '' };
+      }
+      const current = category as Partial<Category>;
+      const name = current.name?.trim() || 'Category';
+      return { name, slug: current.slug?.trim() || toCategorySlug(name), photoUrl: current.photoUrl?.trim() || '' };
+    })
+  };
+}
+
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>(() => readFromStorage(CART_KEY, []));
   const [wishlist, setWishlist] = useState<string[]>(() => readFromStorage(WISHLIST_KEY, []));
   const [account, setAccount] = useState<Account>(() => readFromStorage(ACCOUNT_KEY, null));
-  const [cms, setCms] = useState<CmsContent>(() => readFromStorage(CMS_KEY, defaultCmsContent));
+  const [cms, setCms] = useState<CmsContent>(() => normalizeCmsContent(readFromStorage(CMS_KEY, defaultCmsContent)));
   const [orders, setOrders] = useState<OrderRecord[]>(() => readFromStorage(ORDERS_KEY, []));
   const [audits, setAudits] = useState<AdminAudit[]>(() => readFromStorage(AUDIT_KEY, []));
 
   const accountEmail = account?.email?.toLowerCase() ?? '';
-  const isAdmin = accountEmail.endsWith('@petaldrift.com') || CONTENT_ADMINS.includes(accountEmail) || FULFILLMENT_ADMINS.includes(accountEmail);
+  const isAdmin = accountEmail.endsWith('@mahisart.com') || CONTENT_ADMINS.includes(accountEmail) || FULFILLMENT_ADMINS.includes(accountEmail);
   const adminRoute = typeof window !== 'undefined' && window.location.pathname.startsWith('/admin');
   const canManageContent = adminRoute || CONTENT_ADMINS.includes(accountEmail);
   const canManageFulfillment = adminRoute || FULFILLMENT_ADMINS.includes(accountEmail);
 
   const addAudit = useCallback((action: string, target: string) => {
-    const actor = account?.email ?? 'system@petaldrift.com';
+    const actor = account?.email ?? 'system@mahisart.com';
     setAudits((current) => [
       { id: uid('audit'), actor, action, target, timestamp: new Date().toISOString() },
       ...current
@@ -301,19 +316,25 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       });
       addAudit('cms.banner.reordered', id);
     },
-    addCategory: (name) => {
+    addCategory: (name, photoUrl = '') => {
       if (!canManageContent) return;
       const trimmed = name.trim();
       if (!trimmed) return;
-      setCms((current) => ({ ...current, categories: [...(current.categories ?? []), trimmed] }));
+      const category = { name: trimmed, slug: toCategorySlug(trimmed), photoUrl: photoUrl.trim() };
+      setCms((current) => ({ ...current, categories: [...(current.categories ?? []), category] }));
       addAudit('cms.category.created', trimmed);
     },
-    updateCategory: (index, name) => {
+    updateCategory: (index, category) => {
       if (!canManageContent) return;
-      const trimmed = name.trim();
-      if (!trimmed) return;
-      setCms((current) => ({ ...current, categories: (current.categories ?? []).map((category, idx) => (idx === index ? trimmed : category)) }));
-      addAudit('cms.category.updated', trimmed);
+      setCms((current) => ({
+        ...current,
+        categories: (current.categories ?? []).map((currentCategory, idx) => {
+          if (idx !== index) return currentCategory;
+          const name = category.name?.trim() || currentCategory.name;
+          return { ...currentCategory, ...category, name, slug: category.slug?.trim() || toCategorySlug(name), photoUrl: category.photoUrl?.trim() ?? currentCategory.photoUrl };
+        })
+      }));
+      addAudit('cms.category.updated', String(index));
     },
     removeCategory: (index) => {
       if (!canManageContent) return;

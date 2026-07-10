@@ -50,7 +50,7 @@ export type Testimonial = {
 export type CmsContent = {
   hero: HeroContent;
   banners: Banner[];
-  categories: string[];
+  categories: import('@/lib/petal-data').Category[];
   seo: SeoRecord[];
   pageBlocks: PageBlock[];
   collections: CollectionHighlight[];
@@ -115,7 +115,9 @@ export const defaultCmsContent: CmsContent = {
     secondaryCtaLabel: 'Create Custom Order',
     secondaryCtaHref: '/custom-orders'
   },
-  categories: ['Resin Coasters', 'Serving Trays', 'Bookmarks', 'Jewelry', 'Wall Art', 'Clocks', 'Wedding Keepsakes', 'Keychains', 'Pressed Flower Art', 'Ocean Collection', 'Personalized Gifts', 'Corporate Gifts'],
+  categories: [
+    'Resin Coasters', 'Serving Trays', 'Bookmarks', 'Jewelry', 'Wall Art', 'Clocks', 'Wedding Keepsakes', 'Keychains', 'Pressed Flower Art', 'Ocean Collection', 'Personalized Gifts', 'Corporate Gifts'
+  ].map((name) => ({ name, slug: name.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-'), photoUrl: '' })),
   banners: [
     {
       id: 'bnr-bridal',
@@ -137,10 +139,10 @@ export const defaultCmsContent: CmsContent = {
     }
   ],
   seo: [
-    { route: '/', title: 'Petal Drift | Premium Resin Art', description: 'Premium handcrafted resin art and floral keepsakes.' },
-    { route: '/shop', title: 'Shop | Petal Drift', description: 'Browse premium resin products and handcrafted collections.' },
-    { route: '/custom-orders', title: 'Custom Orders | Petal Drift', description: 'Design your own resin keepsake with our atelier.' },
-    { route: '/orders', title: 'Order History | Petal Drift', description: 'Track your orders and production milestones in real time.' }
+    { route: '/', title: "Mahi\'s Art | Premium Resin Art", description: 'Premium handcrafted resin art and floral keepsakes.' },
+    { route: '/shop', title: "Shop | Mahi\'s Art", description: 'Browse premium resin products and handcrafted collections.' },
+    { route: '/custom-orders', title: "Custom Orders | Mahi\'s Art", description: 'Design your own resin keepsake with our atelier.' },
+    { route: '/orders', title: "Order History | Mahi\'s Art", description: 'Track your orders and production milestones in real time.' }
   ],
   pageBlocks: [
     { id: 'home-process', route: '/', title: 'Atelier Process', body: 'Consultation, concept design, preservation, pouring, finishing, and careful delivery.', published: true },

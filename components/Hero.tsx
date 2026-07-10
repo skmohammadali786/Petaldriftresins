@@ -40,8 +40,7 @@ export function Hero() {
             <Sparkles className="text-gold" size={44} />
             <div>
               <p className="font-button text-xs uppercase tracking-[.35em] text-gold">Handmade in India</p>
-              <h2 className="mt-3 font-heading text-5xl leading-none md:text-7xl">Preserved flowers, ocean textures, and keepsakes in clear resin.</h2>
-              <p className="mx-auto mt-5 max-w-lg text-sm leading-7 text-charcoal/65 md:text-base">Browse ready-to-ship gifts or request a custom design with names, dates, flowers, colours, and premium packing.</p>
+              
             </div>
           </div>
         </motion.div>

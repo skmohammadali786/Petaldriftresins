@@ -13,5 +13,5 @@ export default async function AdminPage() {
   const user = await getCurrentUser(requestHeaders);
   const isAdmin = user?.role === 'admin' || hasAdminPasswordSession(requestHeaders);
 
-  return <SiteChrome><section className="px-6 pt-36"><SectionTitle eyebrow="Admin" title="Command center for Petal Drift" text="Manage catalogue updates, Cloudflare R2 media uploads, and secure admin access through Cloudflare Access." /></section>{isAdmin ? <AdminConsole /> : <AdminPasswordGate />}</SiteChrome>;
+  return <SiteChrome><section className="px-6 pt-36"><SectionTitle eyebrow="Admin" title="Command center for Mahi&apos;s Art" /></section>{isAdmin ? <AdminConsole /> : <AdminPasswordGate />}</SiteChrome>;
 }
