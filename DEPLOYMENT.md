@@ -36,7 +36,7 @@ Cloudflare Access is the recommended Cloudflare auth layer for the admin site.
 1. Import this GitHub repository into Vercel.
 2. Set Framework Preset to **Next.js**.
 3. Build command: `npm run build`.
-4. Output directory: leave default.
+4. Output directory: leave default (`.next`). Do **not** set output directory to `admin`.
 5. Add the environment variables from `.env.example`.
 6. Add the production domain `petaldrift.com`.
 
@@ -48,9 +48,10 @@ Option B, separate Vercel project:
 
 1. Import the same repository a second time.
 2. Use the same build settings.
-3. Add `NEXT_PUBLIC_ADMIN_MODE=true`.
-4. Add only `admin.petaldrift.com` as the domain.
-5. Protect it with Cloudflare Access.
+3. Keep Vercel output directory at default (`.next`), and route users to `/admin` instead of trying to build from an `admin` folder.
+4. Add `NEXT_PUBLIC_ADMIN_MODE=true`.
+5. Add only `admin.petaldrift.com` as the domain.
+6. Protect it with Cloudflare Access.
 
 ## 5. Cloudflare-first data layer
 

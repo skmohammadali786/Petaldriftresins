@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { StoreProvider } from '@/components/StoreProvider';
 
 export const metadata: Metadata = {
   title: 'Petal Drift | Luxury Handmade Resin Art',
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body><StoreProvider>{children}</StoreProvider></body>
     </html>
   );
 }
