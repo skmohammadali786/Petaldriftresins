@@ -46,7 +46,7 @@ The admin panel now writes products to Cloudflare D1, and storefront pages read 
 
 ## 3. Cloudflare Access authentication for admin login
 
-Cloudflare Access is the auth layer for `/admin` and all `/api/admin/*` routes.
+Cloudflare Access is the primary auth layer for `/admin` and all `/api/admin/*` routes.
 
 1. In Cloudflare Zero Trust, create an Access application for `admin.petaldrift.com`.
 2. Add allowed identities (your email and your team emails).
@@ -54,6 +54,7 @@ Cloudflare Access is the auth layer for `/admin` and all `/api/admin/*` routes.
    - `CLOUDFLARE_AUTH_ISSUER`
    - `CLOUDFLARE_AUTH_AUDIENCE`
    - `ADMIN_EMAILS` (comma-separated, must include admin users)
+   - `ADMIN_PANEL_PASSWORD` (optional fallback password for admin panel login form)
 4. (Optional local dev) set `DEV_ADMIN_EMAIL` for development without Cloudflare headers.
 5. Keep Cloudflare Access policy enabled for admin domain.
 
