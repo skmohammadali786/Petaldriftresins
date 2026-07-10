@@ -1,5 +1,6 @@
 import { ProductGrid } from '@/components/Sections';
 import { SiteChrome } from '@/components/SiteChrome';
+import { ProductImageCarousel } from '@/components/ProductImageCarousel';
 import { ProductActionButtons } from '@/components/ProductActionButtons';
 import { getProducts } from '@/lib/products';
 
@@ -10,5 +11,5 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const products = await getProducts();
   const product = products.find((item) => item.slug === slug) ?? products[0];
 
-  return <SiteChrome><section className="grid gap-10 px-6 pb-20 pt-36 lg:grid-cols-2"><div className="min-h-[560px] rounded-[3rem] bg-gradient-to-br from-rose/40 via-white to-sage/30 shadow-boutique" /><div><p className="font-button text-xs uppercase tracking-[.45em] text-gold">Product details</p><h1 className="mt-4 font-heading text-7xl">{product.name}</h1><p className="mt-5 text-2xl">{product.price}</p><p className="mt-6 leading-8 text-charcoal/70">Large gallery, 360 viewer, zoom, video, material details, customization options, estimated delivery, reviews, frequently bought together, sticky add to cart, and recently viewed products are represented in this product experience.</p><ProductActionButtons slug={product.slug} name={product.name} /></div></section><ProductGrid productsList={products} /></SiteChrome>;
+  return <SiteChrome><section className="grid gap-10 px-6 pb-20 pt-36 lg:grid-cols-2"><ProductImageCarousel imageUrls={product.imageUrls ?? []} name={product.name} /><div><p className="font-button text-xs uppercase tracking-[.45em] text-gold">Product details</p><h1 className="mt-4 font-heading text-7xl">{product.name}</h1><p className="mt-5 text-2xl">{product.price}</p><p className="mt-6 leading-8 text-charcoal/70">Large gallery, 360 viewer, zoom, video, material details, customization options, estimated delivery, reviews, frequently bought together, sticky add to cart, and recently viewed products are represented in this product experience.</p><ProductActionButtons slug={product.slug} name={product.name} /></div></section><ProductGrid productsList={products} /></SiteChrome>;
 }

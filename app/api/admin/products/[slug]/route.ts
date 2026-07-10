@@ -15,6 +15,8 @@ export async function PATCH(request: NextRequest, context: { params: Promise<{ s
       stock: payload.stock?.trim() ?? '',
       material: payload.material?.trim() ?? '',
       badge: payload.badge?.trim() ?? '',
+      category: payload.category?.trim() ?? '',
+      imageUrls: (payload.imageUrls ?? []).filter((url): url is string => typeof url === 'string' && Boolean(url.trim())).map((url) => url.trim()).slice(0, 3),
       rating: Number(payload.rating ?? 5)
     });
 

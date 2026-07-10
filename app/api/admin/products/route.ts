@@ -19,10 +19,12 @@ function validateProduct(input: Partial<Product>): Product {
   const stock = input.stock?.trim();
   const material = input.material?.trim();
   const badge = input.badge?.trim();
+  const category = input.category?.trim();
+  const imageUrls = (input.imageUrls ?? []).filter((url): url is string => typeof url === 'string' && Boolean(url.trim())).map((url) => url.trim()).slice(0, 3);
   const rating = Number(input.rating ?? 5);
 
-  if (!slug || !name || !price || !stock || !material || !badge) {
-    throw new Error('slug, name, price, stock, material, and badge are required.');
+  if (!slug || !name || !price || !stock || !material || !badge || !category) {
+    throw new Error('slug, name, price, stock, material, badge, and category are required.');
   }
 
   return {
@@ -32,6 +34,8 @@ function validateProduct(input: Partial<Product>): Product {
     stock,
     material,
     badge,
+    category,
+    imageUrls,
     rating: Number.isFinite(rating) && rating > 0 ? Math.min(Math.round(rating), 5) : 5
   };
 }

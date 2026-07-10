@@ -3,7 +3,7 @@ import { SiteChrome } from '@/components/SiteChrome';
 const faqs = [
   ['Shipping', 'Ready products are dispatched in 2–4 working days. Custom resin orders usually dispatch in 7–14 working days after design approval. Standard India shipping is ₹99 and free above ₹3,000.'],
   ['Returns', 'Returns are accepted within 7 days for unused ready-made products in original packaging. Customised name, flower preservation, date, colour, and made-to-order pieces are not returnable unless damaged in transit.'],
-  ['Contact', 'For order help, custom designs, or after-sales support, email care@petaldrift.com or WhatsApp +91 98765 43210 between 10:00 AM and 6:00 PM IST, Monday to Saturday.'],
+  ['Contact', 'For order help, custom designs, or after-sales support, email care@mahisart.com or WhatsApp +91 98765 43210 between 10:00 AM and 6:00 PM IST, Monday to Saturday.'],
   ['Care', 'Keep resin pieces away from harsh sunlight, heat, abrasives, and alcohol-based cleaners. Wipe gently with a soft dry or slightly damp cloth.']
 ];
 
