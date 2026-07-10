@@ -9,6 +9,11 @@ export const cloudflareConfig = {
   accountId: process.env.CLOUDFLARE_ACCOUNT_ID ?? ''
 };
 
+const adminEmails = (process.env.ADMIN_EMAILS ?? '')
+  .split(',')
+  .map((email) => email.trim().toLowerCase())
+  .filter(Boolean);
+
 export function assetUrl(key: string) {
   const base = cloudflareConfig.r2PublicUrl.replace(/\/$/, '');
   return base ? `${base}/${key.replace(/^\//, '')}` : `/media/${key.replace(/^\//, '')}`;
@@ -21,6 +26,15 @@ export async function createSignedUploadUrl(filename: string, contentType: strin
   };
 }
 
-export async function getCurrentUser(): Promise<PetalUser | null> {
-  return { id: 'demo-admin', email: 'artist@petaldrift.com', role: 'admin', name: 'Petal Drift Studio' };
+export async function getCurrentUser(headers?: Headers): Promise<PetalUser | null> {
+  const accessEmail = headers?.get('cf-access-authenticated-user-email')?.trim().toLowerCase();
+  if (accessEmail) {
+    return {
+      id: accessEmail,
+      email: accessEmail,
+      role: adminEmails.includes(accessEmail) ? 'admin' : 'customer',
+      name: headers?.get('cf-access-authenticated-user-name') ?? undefined
+    };
+  }
+  return null;
 }

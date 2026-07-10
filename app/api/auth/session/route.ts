@@ -1,7 +1,11 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/cloudflare';
 
-export async function GET() {
-  const user = await getCurrentUser();
-  return NextResponse.json({ user, provider: 'Cloudflare Access / Auth integration placeholder' });
+export async function GET(request: NextRequest) {
+  const user = await getCurrentUser(request.headers);
+  return NextResponse.json({
+    user,
+    provider: 'Cloudflare Access',
+    authenticated: Boolean(user)
+  });
 }

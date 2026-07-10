@@ -52,9 +52,9 @@ Option B, separate Vercel project:
 4. Add only `admin.petaldrift.com` as the domain.
 5. Protect it with Cloudflare Access.
 
-## 5. Data model to connect next
+## 5. Cloudflare-first data layer
 
-For production, connect the UI to a database such as Cloudflare D1, Neon Postgres, Supabase Postgres, or PlanetScale. Recommended tables:
+For production, connect this app to **Cloudflare D1** (database) and **Cloudflare R2** (media files) so your full stack stays on Cloudflare-managed services. Recommended D1 tables:
 
 - `products`
 - `product_variants`
@@ -69,4 +69,4 @@ For production, connect the UI to a database such as Cloudflare D1, Neon Postgre
 - `coupons`
 - `settings`
 
-The admin panel already exposes the management modules that map to these tables.
+The admin panel already exposes management modules that map directly to these tables.
